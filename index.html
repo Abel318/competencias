@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Entrenador de entrevista (GitHub Edition)</title>
+  <style>
+    :root{--bg:#05070b;--panel:#111826;--mut:#9fb3cc;--ink:#e9f0ff;--acc:#4cc9f0;--ok:#5fd38d;--line:#1e2a3a;--bad:#ff7676}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui;background:var(--bg);color:var(--ink)}
+    header,.container{max-width:1100px;margin:0 auto;padding:16px}
+    .container{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+    @media(max-width:900px){.container{grid-template-columns:1fr}}
+    .card{background:var(--panel);border:1px solid #172233;border-radius:14px;padding:14px}
+    .full{grid-column:1/-1} label{display:block;color:var(--mut);font-size:.9rem;margin:.3rem 0}
+    input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0d141d;color:var(--ink)}
+    textarea{min-height:90px;resize:vertical} button{border:0;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer;background:var(--acc)}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sec{background:#1f2a3b;color:#cfe3ff}.ok{background:var(--ok)}
+    .pill{padding:7px 10px;border:1px solid var(--line);border-radius:999px;font-size:.85rem}.hint{color:var(--mut);font-size:.88rem}
+    #status.bad{color:var(--bad)} #status.good{color:var(--ok)} video{display:none}
+    canvas{max-width:100%;border-radius:12px;background:#000}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>🗣️👁️ Entrenador de entrevista (GitHub Edition)</h1>
+  <p class="hint">Versión sin Apps Script: micrófono/cámara en navegador + exportación local.</p>
+  <p id="secureWarn" class="hint"></p>
+</header>
+
+<div class="container">
+  <section class="card">
+    <h2>🎥 Simulación no verbal</h2>
+    <p class="hint">Para permisos estables, abre esta web desde <b>https://</b> (GitHub Pages).</p>
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="preview" width="640" height="360"></canvas>
+    <div class="row" style="margin-top:8px">
+      <button id="btnNv">▶️ Iniciar simulación</button>
+      <span id="status" class="pill">Reposo</span>
+    </div>
+    <div id="nvResult" class="hint" style="margin-top:8px">Sin datos todavía.</div>
+  </section>
+
+  <section class="card">
+    <h2>🎙️ Entrevista verbal</h2>
+    <div class="row">
+      <button id="startRec">▶️ Iniciar reconocimiento</button>
+      <button id="stopRec" class="sec" disabled>⏹️ Detener</button>
+      <span class="pill" id="recState">en reposo</span>
+    </div>
+    <label>Transcripción</label>
+    <textarea id="transcript"></textarea>
+    <label>Audio original MP3</label>
+    <audio id="origAudio" controls style="width:100%;display:none"></audio>
+  </section>
+
+  <section class="card full">
+    <h2>🧩 Integración y reporte</h2>
+    <div class="row">
+      <div style="flex:1">
+        <label>Institución</label><input id="institucion" />
+      </div>
+      <div style="flex:1">
+        <label>Email (solo referencia local)</label><input id="email" type="email" />
+      </div>
+    </div>
+    <label>Resumen no verbal (autogenerado, editable)</label>
+    <textarea id="nonVerbalSummary"></textarea>
+    <div class="row">
+      <button id="copyPrompt">📋 Copiar prompt y abrir ChatGPT</button>
+      <button id="pasteResp" class="sec">📥 Pegar respuesta ChatGPT</button>
+    </div>
+    <label>Entrevista mejorada</label>
+    <textarea id="improved"></textarea>
+    <label>Feedback integrado</label>
+    <textarea id="feedback"></textarea>
+    <div class="row">
+      <button id="speakImproved" class="ok">🎧 Leer entrevista mejorada</button>
+      <button id="speakFeedback" class="ok">🎧 Leer feedback</button>
+      <button id="exportTxt" class="sec">⬇️ Descargar TXT</button>
+      <button id="exportPdf" class="sec">🖨️ Descargar PDF</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = (id)=>document.getElementById(id);
+  const video=$('video'), preview=$('preview'), pctx=preview.getContext('2d');
+  const status=$('status'), nvResult=$('nvResult'), nonVerbalSummary=$('nonVerbalSummary');
+  const transcript=$('transcript'), recState=$('recState'), origAudio=$('origAudio');
+  const btnNv=$('btnNv');
+
+  if (!window.isSecureContext) {
+    $('secureWarn').textContent='⚠️ Contexto no seguro: cámara/micrófono suelen bloquearse en HTTP. Usa GitHub Pages (HTTPS).';
+  } else {
+    $('secureWarn').textContent='✅ Contexto seguro detectado (HTTPS/localhost).';
+  }
+
+  let mediaRecorder, recStream, webmBlob, recognition;
+  let nvRunning=false, nvTimer=null, handsInstance=null, lastHands=0, startTs=0;
+  const snapshots=[];
+
+  function setStatus(msg, cls=''){ status.className='pill '+cls; status.textContent=msg; }
+
+  async function ensureCamera(){
+    if (video.srcObject) return true;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+      video.srcObject = stream; await video.play();
+      setStatus('Cámara activa','good'); return true;
+    } catch(e){
+      setStatus('Error cámara: '+e.name,'bad');
+      alert('No se pudo activar la cámara: '+e.message+'\n\nRevisa permisos del navegador y HTTPS.');
+      return false;
+    }
+  }
+
+  function initHands(){
+    if (typeof Hands==='undefined') return;
+    handsInstance = new Hands({locateFile:(f)=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/${f}`});
+    handsInstance.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:.5,minTrackingConfidence:.5});
+    handsInstance.onResults((res)=>{
+      pctx.clearRect(0,0,preview.width,preview.height);
+      pctx.drawImage(video,0,0,preview.width,preview.height);
+      const hands=res.multiHandLandmarks||[]; lastHands=hands.length;
+      hands.forEach(hand=>hand.forEach(pt=>{pctx.beginPath();pctx.arc(pt.x*preview.width,pt.y*preview.height,3,0,7);pctx.fillStyle='#22c55e';pctx.fill();}));
+    });
+    (function loop(){ if(video.readyState>=2) handsInstance.send({image:video}).catch(()=>{}); requestAnimationFrame(loop); })();
+  }
+
+  btnNv.onclick = async ()=>{
+    if (!nvRunning){
+      if (!await ensureCamera()) return;
+      nvRunning=true; snapshots.length=0; startTs=Date.now();
+      setStatus('Simulación en marcha'); btnNv.textContent='⏹️ Detener simulación';
+      nvTimer=setInterval(()=>{ snapshots.push({t:Date.now()-startTs,hands:lastHands}); if(Date.now()-startTs>10*60*1000) btnNv.click(); },2000);
+    } else {
+      nvRunning=false; clearInterval(nvTimer); btnNv.textContent='▶️ Iniciar simulación';
+      const duration=((Date.now()-startTs)/1000).toFixed(1);
+      const avgHands=snapshots.length? (snapshots.reduce((a,b)=>a+b.hands,0)/snapshots.length).toFixed(2):'0.00';
+      const handPresence=snapshots.length? Math.round(snapshots.filter(s=>s.hands>0).length*100/snapshots.length):0;
+      const txt=`RESUMEN NO VERBAL\nDuración: ${duration}s\nPresencia de manos: ${handPresence}%\nMedia de manos detectadas: ${avgHands}\nObservación: Mantén manos visibles sin tapar la cara y postura centrada.`;
+      nonVerbalSummary.value=txt;
+      nvResult.innerHTML=`Duración: <code>${duration}s</code> · Presencia de manos: <code>${handPresence}%</code> · Media manos: <code>${avgHands}</code>`;
+      setStatus('Resumen no verbal generado','good');
+    }
+  };
+
+  // Speech recognition
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SR){
+    recognition=new SR(); recognition.lang='es-ES'; recognition.continuous=true; recognition.interimResults=true;
+    let acc=''; recognition.onresult=(e)=>{let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) acc+=e.results[i][0].transcript+' '; else interim+=e.results[i][0].transcript;} transcript.value=(acc+interim).trim();};
+    recognition.onstart=()=>recState.textContent='grabando…'; recognition.onend=()=>recState.textContent='en reposo';
+  }
+
+  $('startRec').onclick = async ()=>{
+    try{
+      recStream=await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRecorder=new MediaRecorder(recStream); const chunks=[];
+      mediaRecorder.ondataavailable=(e)=>chunks.push(e.data);
+      mediaRecorder.onstop=async()=>{ webmBlob=new Blob(chunks,{type:'audio/webm'}); const mp3=await convertWebmToMp3(webmBlob); origAudio.src=URL.createObjectURL(mp3); origAudio.style.display='block'; };
+      mediaRecorder.start(); recognition&&recognition.start(); $('startRec').disabled=true; $('stopRec').disabled=false;
+    }catch(e){ alert('Micrófono no disponible: '+e.message); }
+  };
+  $('stopRec').onclick = ()=>{ recognition&&recognition.stop(); mediaRecorder&&mediaRecorder.stop(); recStream&&recStream.getTracks().forEach(t=>t.stop()); $('startRec').disabled=false; $('stopRec').disabled=true; };
+
+  async function convertWebmToMp3(blob){
+    const arr=await blob.arrayBuffer(); const ctx=new (window.AudioContext||window.webkitAudioContext)(); const ab=await ctx.decodeAudioData(arr);
+    const pcm=ab.getChannelData(0), s16=new Int16Array(pcm.length); for(let i=0;i<pcm.length;i++){const s=Math.max(-1,Math.min(1,pcm[i])); s16[i]=s<0?s*0x8000:s*0x7fff;}
+    const enc=new lamejs.Mp3Encoder(1,ab.sampleRate,128), size=1152, data=[];
+    for(let i=0;i<s16.length;i+=size){const b=enc.encodeBuffer(s16.subarray(i,i+size)); if(b.length)data.push(b);} const end=enc.flush(); if(end.length)data.push(end);
+    return new Blob(data,{type:'audio/mp3'});
+  }
+
+  function buildPrompt(){
+    const verbal=transcript.value.trim(), nv=nonVerbalSummary.value.trim();
+    if(!verbal) return '';
+    return `Eres orientador/a laboral del SAE. Devuelve exactamente:\n== ENTREVISTA MEJORADA ==\n...\n== FEEDBACK VERBAL ==\n...\n== FEEDBACK NO VERBAL ==\n...\n== RECOMENDACIONES SAE ==\n...\n[DISCURSO ORIGINAL]\n"""${verbal}"""\n[ANÁLISIS NO VERBAL]\n"""${nv}"""`;
+  }
+
+  $('copyPrompt').onclick = async()=>{
+    const p=buildPrompt(); if(!p) return alert('Falta transcripción.');
+    await navigator.clipboard.writeText(p); window.open('https://chat.openai.com/','_blank','noopener');
+  };
+
+  function block(txt,name,next){ const re=new RegExp(`==\\s*${name}[^\\n]*==([\\s\\S]*?)(?==\\s*${next}[^\\n]*==|$)`,'i'); const m=txt.match(re); return m?m[1].trim():''; }
+  $('pasteResp').onclick = async()=>{
+    const t=(await navigator.clipboard.readText()||'').trim(); if(!t) return alert('Portapapeles vacío.');
+    $('improved').value=block(t,'ENTREVISTA\\s*MEJORADA','FEEDBACK\\s*VERBAL');
+    const fbV=block(t,'FEEDBACK\\s*VERBAL','FEEDBACK\\s*NO\\s*VERBAL');
+    const fbNv=block(t,'FEEDBACK\\s*NO\\s*VERBAL','RECOMENDACIONES\\s*SAE');
+    const rec=block(t,'RECOMENDACIONES\\s*SAE','DATOS\\s*ANALIZADOS');
+    $('feedback').value=`== FEEDBACK VERBAL ==\n${fbV}\n\n== FEEDBACK NO VERBAL ==\n${fbNv}\n\n== RECOMENDACIONES SAE ==\n${rec}`.trim();
+  };
+
+  function speak(text){ if(!text) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='es-ES'; speechSynthesis.speak(u); }
+  $('speakImproved').onclick=()=>speak($('improved').value.trim());
+  $('speakFeedback').onclick=()=>speak($('feedback').value.trim());
+
+  function reportText(){
+    return [
+      'ENTREVISTA INTEGRADA',
+      `Fecha: ${new Date().toISOString()}`,
+      `Institución: ${$('institucion').value||'-'}`,
+      `Email: ${$('email').value||'-'}`,'',
+      '--- ORIGINAL ---', transcript.value.trim(), '',
+      '--- NO VERBAL ---', nonVerbalSummary.value.trim(), '',
+      '--- ENTREVISTA MEJORADA ---', $('improved').value.trim(), '',
+      '--- FEEDBACK ---', $('feedback').value.trim()
+    ].join('\n');
+  }
+
+  $('exportTxt').onclick=()=>{ const blob=new Blob([reportText()],{type:'text/plain;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='entrevista_integrada.txt'; a.click(); URL.revokeObjectURL(a.href); };
+  $('exportPdf').onclick=()=>{
+    const { jsPDF } = window.jspdf;
+    const doc=new jsPDF();
+    const lines=doc.splitTextToSize(reportText(),180); doc.text(lines,10,10); doc.save('entrevista_integrada.pdf');
+  };
+
+  initHands();
+})();
+</script>
+</body>
+</html>
