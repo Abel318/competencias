@@ -1,0 +1,6 @@
+display_name: "CV Orientación Profesional"
+short_description: "CV guiado para orientación laboral"
+default_prompt: |
+  Actúa usando la skill $cv-orientacion-profesional para guiar la elaboración, revisión o adaptación de currículums por fases, respetando privacidad, veracidad, validación humana y prioridad ATS.
+policy:
+  allow_implicit_invocation: true
