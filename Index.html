@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elevator Pitch – Verbal + No Verbal (SAE, v4.1)</title>
+  <style>
+    :root{
+      --bg:#05070b;
+      --panel:#111826;
+      --mut:#9fb3cc;
+      --ink:#e9f0ff;
+      --acc:#4cc9f0;
+      --accent2:#5fd38d;
+      --line:#1e2a3a;
+      --danger:#ff7676;
+    }
+    *{ box-sizing:border-box }
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+    header{
+      max-width:1200px;
+      margin:0 auto;
+      padding:18px 20px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .brand{ display:flex; align-items:center; gap:10px }
+    .brand h1{ margin:0; font-size:1.35rem }
+    .subtitle{ font-size:.85rem; color:var(--mut); margin-top:2px }
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 20px 40px;
+      display:grid;
+      grid-template-columns:1.15fr 1.25fr;
+      gap:16px;
+    }
+    .full{ grid-column:1/3 }
+    @media (max-width:1000px){
+      .container{ grid-template-columns:1fr }
+      .full{ grid-column:auto }
+    }
+
+    .card{
+      background:var(--panel);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 6px 20px rgba(0,0,0,.25);
+      border:1px solid #172233;
+    }
+    h2{ margin:.2rem 0 1rem }
+    label{
+      color:var(--mut);
+      font-size:.9rem;
+      display:block;
+      margin:.35rem 0 .25rem;
+    }
+    input, select, textarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#0d141d;
+      color:#e9f0ff;
+      outline:none;
+      font-size:.9rem;
+    }
+    textarea{ resize:vertical; min-height:90px }
+    audio{ width:100%; margin-top:8px }
+    .row{
+      display:flex;
+      gap:8px;
+      align-items:flex-end;
+      flex-wrap:wrap;
+    }
+    .row > *{ flex:1 }
+    .row .shrink{ flex:0 0 auto }
+    .row .grow{ flex:1 }
+    button{
+      background:var(--acc);
+      border:none;
+      color:#00121a;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.15s transform ease,.15s opacity ease;
+      font-size:.9rem;
+    }
+    button:hover{ transform:translateY(-1px) }
+    button:disabled{ opacity:.6; cursor:not-allowed; transform:none }
+    .btn-secondary{ background:#1f2a3b; color:#cfe3ff; border:1px solid #26374e }
+    .btn-success{ background:var(--accent2); color:#00130a }
+    .btn-danger{ background:#b00020; color:#fff }
+    .badge{
+      background:#1c2635;
+      border:1px dashed #2b3b53;
+      padding:6px 10px;
+      border-radius:10px;
+      display:inline-block;
+      color:#cfe3ff;
+      font-size:.85rem;
+    }
+    .hint{ color:var(--mut); font-size:.9rem; margin-top:.35rem }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#0d141d;
+      border:1px solid var(--line);
+      color:#cfe3ff;
+      font-size:.85rem;
+    }
+    .small{ font-size:.85rem }
+    .ok{ color:#5fd38d }
+    .warn{ color:#ffcc66 }
+    .bad{ color:var(--danger) }
+
+    video, canvas{
+      border-radius:12px;
+      background:#000;
+      max-width:100%;
+      display:block;
+    }
+
+    #nvStatus span.badge-ok{
+      background:#0b3322;
+      color:#5fd38d;
+    }
+    #nvStatus span.badge-bad{
+      background:#3a1118;
+      color:#ff8a8a;
+    }
+    #nvStatus span.badge-info{
+      background:#1b2645;
+      color:#88a6ff;
+    }
+    .badge-ok, .badge-bad, .badge-info{
+      display:inline-block;
+      padding:0.2rem 0.6rem;
+      border-radius:999px;
+      font-size:0.8rem;
+      font-weight:600;
+    }
+    .badge-ok{ background:#0b3322; color:#5fd38d; }
+    .badge-bad{ background:#3a1118; color:#ff8a8a; }
+    .badge-info{ background:#1b2645; color:#88a6ff; }
+
+    #nvResult{
+      max-height:260px;
+      overflow:auto;
+      font-size:.85rem;
+      line-height:1.4;
+      background:#05090f;
+      border-radius:12px;
+      padding:8px 10px;
+      border:1px solid #222f40;
+      margin-top:6px;
+      white-space:normal;
+    }
+
+    code{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:.8rem;
+      background:#05090f;
+      padding:1px 4px;
+      border-radius:4px;
+    }
+  </style>
+
+  <!-- LameJS: encoder MP3 en el navegador -->
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+
+  <!-- MediaPipe Hands UMD -->
+  <script
+    id="mpHandsScript"
+    src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/hands.js"
+  ></script>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">🗣️👁️</span>
+      <div>
+        <h1>Elevator Pitch – Verbal + No Verbal (SAE)</h1>
+        <div class="subtitle">Entrenador integrado de lenguaje verbal (discurso) y no verbal (cara, manos y voz).</div>
+      </div>
+    </div>
+    <div class="row" style="max-width:560px">
+      <div class="grow">
+        <label>Institución</label>
+        <input id="institucion" placeholder="Nombre de tu institución…">
+      </div>
+      <div class="grow">
+        <label>Email para recibir MP3 (original + mejorado + feedback)</label>
+        <input id="email" type="email" placeholder="tu@correo.com">
+      </div>
+      <div class="shrink small pill">Flujo: verbal + no verbal en un solo informe</div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- MÓDULO NO VERBAL: CÁMARA + VOZ -->
+    <section class="card">
+      <h2>🎥 Módulo lenguaje no verbal (cara, manos y voz)</h2>
+      <p class="hint">
+        1) Pulsa <b>Iniciar simulación</b>.<br>
+        2) Habla como si estuvieras en una entrevista (máx. 10 min).<br>
+        3) Al parar, se genera un <b>resumen no verbal</b> que se copiará al bloque de texto de abajo.
+      </p>
+
+      <!-- IMPORTANTE: muted + playsinline para que el canvas pueda dibujar -->
+      <video id="video" width="480" height="360" autoplay playsinline muted></video>
+
+      <!-- Canvas oculto para capturas → Vision API -->
+      <canvas id="canvas" width="480" height="360" style="display:none;"></canvas>
+
+      <!-- Canvas visible para MediaPipe Hands (puntos verdes) -->
+      <canvas id="canvasHands" width="480" height="360"></canvas>
+
+      <div class="row" style="margin-top:10px;">
+        <button id="nvBtn" class="btn-secondary">▶️ Iniciar simulación (máx. 10 min)</button>
+        <span class="small">Estado módulo no verbal: <span id="nvStatus" class="badge badge-info">Inicializando cámara…</span></span>
+      </div>
+
+      <div id="nvResult" class="small">
+        A la espera de que inicies la simulación. Se mostrarán aquí los resultados de cara, manos y voz.
+      </div>
+    </section>
+
+    <!-- MÓDULO VERBAL: GRABACIÓN & TRANSCRIPCIÓN -->
+    <section class="card">
+      <h2>🎙️ Módulo lenguaje verbal (grabación & transcripción)</h2>
+      <div class="row">
+        <button id="startRec" class="cta">▶️ Iniciar reconocimiento</button>
+        <button id="stopRec" class="btn-secondary" disabled>⏹️ Detener</button>
+        <span class="pill shrink"><span>Estado:</span><b id="recState">en reposo</b></span>
+      </div>
+      <div class="hint">
+        Transcripción en tiempo real (Web Speech API). El audio original se convierte a MP3 para máxima compatibilidad.
+      </div>
+      <label>Transcripción del pitch (discurso original)</label>
+      <textarea id="transcript" rows="6" placeholder="Aquí aparecerá la transcripción de tu elevator pitch…"></textarea>
+
+      <div class="row">
+        <div class="grow">
+          <label>Audio original (MP3)</label>
+          <audio id="origMp3Player" controls style="display:none"></audio>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE COMÚN: RESUMEN NO VERBAL + MEJORA PITCH -->
+    <section class="card full">
+      <h2>🧩 Integración verbal + no verbal (prompt ChatGPT)</h2>
+
+      <div class="row">
+        <div class="grow">
+          <label>Resumen no verbal (pegar aquí / generado automáticamente)</label>
+          <textarea id="nonVerbalSummary" rows="6"
+            placeholder="Tras la simulación se generará aquí un resumen técnico de cara, manos, centrado y voz… Puedes editarlo antes de lanzar el análisis integrado."></textarea>
+          <div class="hint small">
+            Este bloque se inserta en el prompt como <b>[ANÁLISIS NO VERBAL]</b> para que ChatGPT genere un informe integrado.
+          </div>
+        </div>
+      </div>
+
+      <p class="hint">
+        Flujo: graba tu pitch → realiza simulación no verbal → revisa el resumen de arriba → pulsa <b>Copiar prompt & abrir ChatGPT</b> →
+        pega la respuesta y la app separa automáticamente PITCH 30s, PITCH 60s y el feedback integrado.
+      </p>
+
+      <div class="row" style="margin-bottom:10px;">
+        <button id="btnCopiarYAbrir">📋 Copiar prompt integrado & abrir ChatGPT</button>
+        <button id="btnPegar" class="btn-secondary">📥 Pegar respuesta de ChatGPT</button>
+        <button id="btnExportPdf" class="btn-secondary">🖨️ Exportar a PDF (verbal + no verbal)</button>
+      </div>
+
+      <div class="row">
+        <div class="grow">
+          <label>PITCH 30s (versión mejorada)</label>
+          <textarea id="pitch30" rows="6" placeholder="(automático al pegar respuesta de ChatGPT)"></textarea>
+        </div>
+        <div class="grow">
+          <label>PITCH 60s (versión mejorada)</label>
+          <textarea id="pitch60" rows="6" placeholder="(automático al pegar respuesta de ChatGPT)"></textarea>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="grow">
+          <label>Feedback integrado (verbal + no verbal + recomendaciones)</label>
+          <textarea id="feedbackArea" rows="8" placeholder="(se generará automáticamente sumando FEEDBACK VERBAL + FEEDBACK NO VERBAL + RECOMENDACIONES SAE)"></textarea>
+          <div class="small" id="fbTtsState">Estado feedback MP3: <span class="warn">pendiente</span></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="grow">
+          <label>Voz TTS</label>
+          <select id="voiceSelect">
+            <optgroup label="Femeninas">
+              <option value="es-ES-Neural2-A">Neural2 A (femenina)</option>
+              <option value="es-ES-Neural2-C" selected>Neural2 C (femenina)</option>
+            </optgroup>
+            <optgroup label="Masculinas">
+              <option value="es-ES-Neural2-B">Neural2 B (masculina)</option>
+              <option value="es-ES-Neural2-D">Neural2 D (masculina)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="grow">
+          <label>Versión a reproducir / sintetizar</label>
+          <select id="whichPitch">
+            <option value="30s" selected>30s</option>
+            <option value="60s">60s</option>
+          </select>
+        </div>
+        <div class="row" style="align-items:flex-end">
+          <button id="btnTTS" class="btn-success">🎧 Reproducir / Pausar (30s/60s)</button>
+          <button id="btnTTSFeedback" class="btn-success">🎧 Reproducir / Pausar (Feedback)</button>
+        </div>
+      </div>
+
+      <label>Audio mejorado (MP3)</label>
+      <audio id="ttsPlayback" controls style="display:none"></audio>
+
+      <label style="margin-top:8px">Audio feedback integrado (MP3)</label>
+      <audio id="feedbackPlayer" controls style="display:none"></audio>
+    </section>
+
+    <!-- 3) Guardar & Enviar -->
+    <section class="card full">
+      <h2>📤 Guardar en hoja & Enviar email (3 MP3)</h2>
+      <p class="hint">
+        Se guardan: Original, PITCH 30s, PITCH 60s, Feedback (incluye parte no verbal) y un texto completo con también el resumen no verbal.<br>
+        Se envían los MP3: <b>original + el elegido (30s/60s) + feedback</b>.
+      </p>
+      <div class="row">
+        <button id="btnSaveSend" style="background:#2f6fec; color:#fff">💾 Guardar & ✉️ Enviar</button>
+        <span>Destino: <span class="badge" id="emailBadge">—</span></span>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ====== Estado / refs globales ======
+    let recognition, mediaRecorder, audioStream;
+    let webmBlob = null;
+    let originalMp3B64 = ''; // MP3 base64 del original
+    let improvedMp3B64 = ''; // MP3 base64 del pitch elegido (30s/60s)
+    let feedbackMp3B64 = ''; // MP3 base64 del feedback (AUTO al pegar)
+
+    // No verbal (cámara + voz)
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');           // oculto → Vision API
+    const ctx = canvas.getContext('2d');
+
+    const canvasHands = document.getElementById('canvasHands'); // visible → MediaPipe Hands
+    const ctxHands = canvasHands.getContext('2d');
+
+    const nvBtn = document.getElementById('nvBtn');
+    const nvStatusEl = document.getElementById('nvStatus');
+    const nvResultEl = document.getElementById('nvResult');
+    const nonVerbalSummaryEl = document.getElementById('nonVerbalSummary');
+
+    const institucionEl = document.getElementById('institucion');
+    const emailEl = document.getElementById('email');
+    const emailBadge = document.getElementById('emailBadge');
+    const transcriptEl = document.getElementById('transcript');
+    const recStateEl = document.getElementById('recState');
+    const origMp3Player = document.getElementById('origMp3Player');
+    const pitch30El = document.getElementById('pitch30');
+    const pitch60El = document.getElementById('pitch60');
+    const feedbackEl = document.getElementById('feedbackArea');
+    const voiceSelect = document.getElementById('voiceSelect');
+    const whichPitch = document.getElementById('whichPitch');
+    const ttsPlayback = document.getElementById('ttsPlayback');
+    const feedbackPlayer = document.getElementById('feedbackPlayer');
+    const fbTtsState = document.getElementById('fbTtsState');
+
+    emailEl.addEventListener('input', ()=> emailBadge.textContent = emailEl.value||'—');
+
+    // Si el usuario cambia de voz, invalidamos MP3 ya generados
+    voiceSelect.addEventListener('change', () => {
+      improvedMp3B64 = '';
+      feedbackMp3B64 = '';
+    });
+
+    // ====== MediaPipe Hands: configuración básica ======
+    let handsInstance = null;
+
+    // >>> NUEVO: estado global con la info de manos para cada frame
+    let lastHandsInfo = null; // { count, avgArea, ts, boxes }
+
+    // Umbrales para calcular proximidad/cobertura de manos respecto a la cara
+    const FACE_NEAR_EXPANSION = 0.35; // ensancha la caja de la cara para detectar manos próximas
+    const FACE_NEAR_THRESHOLD = 0.05; // % mínimo de solape con la caja expandida
+    const FACE_COVER_THRESHOLD = 0.25; // % mínimo de solape con la caja real para considerar que tapa
+
+    function onResultsHands(results){
+      if (!canvasHands) return;
+
+      if (canvasHands.width === 0 || canvasHands.height === 0) {
+        canvasHands.width  = video.videoWidth  || 640;
+        canvasHands.height = video.videoHeight || 480;
+      }
+
+      ctxHands.save();
+      ctxHands.clearRect(0, 0, canvasHands.width, canvasHands.height);
+
+      if (results.image) {
+        ctxHands.drawImage(results.image, 0, 0, canvasHands.width, canvasHands.height);
+      }
+
+      const hands = results.multiHandLandmarks || [];
+      const count = hands.length;
+
+      // Cálculo de área relativa (en coordenadas normalizadas 0–1)
+      const areas = [];
+      const boxes = [];
+
+      if (count > 0) {
+        for (let i = 0; i < hands.length; i++) {
+          const hand = hands[i];
+          let minX = 1, minY = 1, maxX = 0, maxY = 0;
+          for (let j = 0; j < hand.length; j++) {
+            const pt = hand[j];
+            if (pt.x < minX) minX = pt.x;
+            if (pt.x > maxX) maxX = pt.x;
+            if (pt.y < minY) minY = pt.y;
+            if (pt.y > maxY) maxY = pt.y;
+          }
+          const w = Math.max(0, maxX - minX);
+          const h = Math.max(0, maxY - minY);
+          const area = w * h; // ya es relativa (0–1)
+          areas.push(area);
+          boxes.push({ x0: minX, y0: minY, x1: maxX, y1: maxY, w, h });
+
+          // Dibujo de puntos verdes
+          for (let j = 0; j < hand.length; j++) {
+            const pt = hand[j];
+            const x = pt.x * canvasHands.width;
+            const y = pt.y * canvasHands.height;
+            ctxHands.beginPath();
+            ctxHands.arc(x, y, 3, 0, 2 * Math.PI);
+            ctxHands.fillStyle = '#22c55e';
+            ctxHands.fill();
+          }
+        }
+      }
+
+      const avgArea = areas.length
+        ? areas.reduce((a,b)=>a+b,0) / areas.length
+        : 0;
+
+      // Guardamos info de manos para que captureShot la pueda asociar al frame correspondiente
+      lastHandsInfo = {
+        count: count,
+        avgArea: avgArea,
+        boxes,
+        ts: performance.now()
+      };
+
+      ctxHands.restore();
+    }
+
+    function initHands(){
+      if (typeof Hands === 'undefined') {
+        setNvStatus('❌ Hands no está definido. El script de MediaPipe no se ha cargado.', 'bad');
+        console.error('Hands undefined. Revisa la carga del script @mediapipe/hands.');
+        return;
+      }
+
+      setNvStatus('MediaPipe Hands cargado. Esperando cámara…', 'info');
+
+      handsInstance = new Hands({
+        locateFile: function(file){
+          return 'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4/' + file;
+        }
+      });
+
+      handsInstance.setOptions({
+        maxNumHands: 2,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+      });
+
+      handsInstance.onResults(onResultsHands);
+      startHandsLoop();
+    }
+
+    function startHandsLoop(){
+      if (!handsInstance) {
+        setNvStatus('Error interno: handsInstance no inicializado.', 'bad');
+        return;
+      }
+
+      function process(){
+        if (video.readyState >= 2) { // HAVE_CURRENT_DATA
+          handsInstance.send({ image: video })
+            .then(() => {
+              requestAnimationFrame(process);
+            })
+            .catch(e => {
+              console.error('Error en hands.send:', e);
+              requestAnimationFrame(process);
+            });
+        } else {
+          requestAnimationFrame(process);
+        }
+      }
+
+      requestAnimationFrame(process);
+    }
+
+    // ====== AudioController: play/pause/reanudar + exclusión mutua ======
+    const AudioController = (() => {
+      let current = null;
+      let currentUrl = null;
+      function stopCurrent() {
+        if (current) { current.pause(); }
+      }
+      function setSrc(el, url) {
+        if ((el === current) && currentUrl && el.dataset._am_url === currentUrl) {
+          URL.revokeObjectURL(currentUrl);
+        }
+        if (el.dataset._am_url) {
+          try { URL.revokeObjectURL(el.dataset._am_url); } catch(e){}
+        }
+        el.src = url;
+        el.dataset._am_url = url;
+        currentUrl = url;
+      }
+      async function toggle(el) {
+        if (current && current !== el) {
+          current.pause();
+        }
+        current = el;
+        if (el.paused) {
+          try { await el.play(); } catch(e) {}
+        } else {
+          el.pause();
+        }
+      }
+      function forcePlay(el) {
+        if (current && current !== el) current.pause();
+        current = el;
+        el.play().catch(()=>{});
+      }
+      return { stopCurrent, setSrc, toggle, forcePlay };
+    })();
+
+    // ====== Util: limpieza para TTS ======
+    function sanitizeForTTS(s) {
+      if (!s) return '';
+      s = s.replace(/^==.*?==\s*$/gm, ''); // encabezados
+      s = s.replace(/^[\s>*•\-\+\u2013\u2014\u00B7\u25AA\u25AB\u25CF\u25E6\u2022]+/gm, ''); // viñetas
+      s = s.replace(/\*/g, ''); // asteriscos
+      try { s = s.replace(/[\p{Extended_Pictographic}\p{Emoji_Presentation}]/gu, ''); }
+      catch(e){ s = s.replace(/[\u2190-\u21FF\u2300-\u23FF\u25A0-\u25FF\u2600-\u27BF\u2B00-\u2BFF\uD800-\uDFFF]/g, ''); }
+      s = s.replace(/:[a-z0-9_+-]+:/gi, ''); // :emoji:
+      s = s.replace(/[👉🧠➡️✅✳️✴️⭐🔹🔸💡✔︎✓✕✖︎→⇒➔➜➤]/g, '');
+      s = s.replace(/[ \t]+/g, ' ').replace(/\s+\n/g, '\n').trim();
+      return s;
+    }
+    function bulletsToSentences(s){
+      return s.replace(/^[\s>*•\-\+\u2013\u2014\u00B7]+/gm, '').replace(/\n{2,}/g, '\n');
+    }
+    async function b64ToObjectUrl(b64, mime='audio/mp3') {
+      const bin = atob(b64);
+      const arr = new Uint8Array([...bin].map(c => c.charCodeAt(0)));
+      const blob = new Blob([arr], { type: mime });
+      return URL.createObjectURL(blob);
+    }
+
+    // ====== Reconocimiento & grabación (VERBAL) ======
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SR();
+      recognition.lang = 'es-ES';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      let acc = '';
+      recognition.onresult = e => {
+        let interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) acc += e.results[i][0].transcript + ' ';
+          else interim += e.results[i][0].transcript;
+        }
+        transcriptEl.value = (acc + interim).trim();
+      };
+      recognition.onstart = ()=> recStateEl.textContent = 'grabando…';
+      recognition.onend   = ()=> recStateEl.textContent = 'en reposo';
+      recognition.onerror = err => alert('Reconocimiento: ' + err.error);
+    } else {
+      alert('Tu navegador no soporta reconocimiento de voz.');
+    }
+
+    document.getElementById('startRec').onclick = function(){
+      transcriptEl.value = '';
+      originalMp3B64 = '';
+      improvedMp3B64 = '';
+      feedbackMp3B64 = '';
+      ttsPlayback.style.display = 'none';
+      feedbackPlayer.style.display = 'none';
+      origMp3Player.style.display = 'none';
+
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          audioStream = stream;
+          mediaRecorder = new MediaRecorder(stream);
+          const chunks = [];
+          mediaRecorder.ondataavailable = e => chunks.push(e.data);
+          mediaRecorder.onstop = async () => {
+            webmBlob = new Blob(chunks, { type:'audio/webm' });
+            try {
+              const mp3Blob = await convertWebmToMp3(webmBlob);
+              const url = URL.createObjectURL(mp3Blob);
+              if (origMp3Player.dataset._am_url) {
+                try { URL.revokeObjectURL(origMp3Player.dataset._am_url); } catch(e){}
+              }
+              origMp3Player.src = url;
+              origMp3Player.dataset._am_url = url;
+              origMp3Player.style.display = 'block';
+              originalMp3B64 = await blobToBase64(mp3Blob);
+            } catch (e) {
+              alert('No se pudo convertir a MP3: ' + (e?.message || e));
+            }
+          };
+          mediaRecorder.start();
+          recognition && recognition.start();
+          this.disabled = true;
+          document.getElementById('stopRec').disabled = false;
+        })
+        .catch(err => alert('Micrófono: ' + err.message));
+    };
+
+    document.getElementById('stopRec').onclick = function(){
+      recognition && recognition.stop();
+      mediaRecorder && mediaRecorder.stop();
+      audioStream && audioStream.getTracks().forEach(t => t.stop());
+      document.getElementById('startRec').disabled = false;
+      this.disabled = true;
+    };
+
+    // Conversión webm → mp3
+    async function convertWebmToMp3(blob) {
+      const arrayBuf = await blob.arrayBuffer();
+      const ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuf = await ctxAudio.decodeAudioData(arrayBuf);
+
+      let pcm;
+      if (audioBuf.numberOfChannels > 1) {
+        const ch1 = audioBuf.getChannelData(0);
+        const ch2 = audioBuf.getChannelData(1);
+        const len = Math.min(ch1.length, ch2.length);
+        pcm = new Float32Array(len);
+        for (let i = 0; i < len; i++) pcm[i] = (ch1[i] + ch2[i]) * 0.5;
+      } else {
+        pcm = audioBuf.getChannelData(0);
+      }
+      const samples = floatTo16BitPCM(pcm);
+      const mp3enc = new lamejs.Mp3Encoder(1, audioBuf.sampleRate, 128);
+      const blockSize = 1152; let mp3Data = [];
+      for (let i = 0; i < samples.length; i += blockSize) {
+        const chunk = samples.subarray(i, i + blockSize);
+        const mp3buf = mp3enc.encodeBuffer(chunk);
+        if (mp3buf.length > 0) mp3Data.push(mp3buf);
+      }
+      const end = mp3enc.flush(); if (end.length > 0) mp3Data.push(end);
+      return new Blob(mp3Data, { type: 'audio/mp3' });
+    }
+    function floatTo16BitPCM(f32) {
+      const out = new Int16Array(f32.length);
+      for (let i = 0; i < f32.length; i++) {
+        let s = Math.max(-1, Math.min(1, f32[i]));
+        out[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      }
+      return out;
+    }
+    async function blobToBase64(b){
+      const arrBuf = await b.arrayBuffer();
+      let binary = '';
+      const bytes = new Uint8Array(arrBuf);
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    // ====== PROMPT INTEGRADO (Verbal + No verbal) ======
+    function buildPromptIntegrated() {
+      const verbal = (transcriptEl.value || '').trim();
+      const nonVerbal = (nonVerbalSummaryEl.value || '').trim();
+
+      if (!verbal) {
+        alert('Falta el discurso original (transcripción del pitch).');
+        return '';
+      }
+      if (!nonVerbal) {
+        const cont = confirm('El resumen no verbal está vacío. ¿Quieres continuar igualmente (se enviará en blanco)?');
+        if (!cont) return '';
+      }
+
+      return `[ROL/SISTEMA]
+  Eres un/a orientador/a laboral del Servicio Andaluz de Empleo (SAE), experto/a en comunicación profesional, entrevistas, lenguaje no verbal y empleabilidad.
+  Tu tarea es analizar un Elevator Pitch REAL en UN SOLO PASO combinando dos fuentes:
+
+  1) Lenguaje verbal: el discurso transcrito del pitch
+  2) Lenguaje no verbal: el resumen técnico generado por el módulo de cámara (expresión facial, postura de cabeza, gestos de manos, centrado en el encuadre, ritmo y volumen de voz)
+
+  Elabora un informe profesional INTEGRADO (verbal + no verbal), accionable y muy claro para una persona en búsqueda activa de empleo.
+
+  Devuelve EXACTAMENTE estos bloques, con estos encabezados y en este orden:
+
+  ======================================================================
+  == RESUMEN INTEGRADO (perfil + contexto) ==
+  • Resume en 6–8 líneas:
+    – Qué perfil y objetivo profesional transmite la persona
+    – Qué competencia quiere potenciar (si se deduce)
+    – Qué situación general reflejan el discurso y la comunicación no verbal
+    – 2 fortalezas globales detectadas
+    – 2 riesgos o áreas de mejora globales
+
+  ======================================================================
+  == PITCH 30s (versión mejorada) ==
+  Genera un pitch profesional de 80–120 palabras, con:
+  • Hook inicial
+  • Valor profesional claro
+  • 2–3 logros o evidencias
+  • CTA concreta
+  • Tono directo, natural y orientado a empleo
+  • Integración sutil de la competencia destacada
+
+  ======================================================================
+  == PITCH 60s (versión mejorada) ==
+  Genera un pitch de 160–220 palabras, con:
+  • Presentación clara
+  • Desarrollo del valor aportado
+  • Evidencias medibles
+  • Relato breve de un ejemplo profesional
+  • Beneficio para la empresa
+  • CTA profesional
+  • Adaptado al estilo verbal detectado en el pitch original
+
+  ======================================================================
+  == FEEDBACK VERBAL (cómo mejorar el discurso) ==
+  Genera un análisis de 8–12 líneas sobre:
+  • Claridad y estructura
+  • Orden lógico
+  • Uso de logros y métricas
+  • Lenguaje y tono
+  • CTA
+  • 3 fortalezas verbales
+  • 3 mejoras inmediatas con ejemplos de cómo reformular frases
+
+  ======================================================================
+  == FEEDBACK NO VERBAL (cara, manos, postura, voz) ==
+  Genera un análisis profesional basado solo en los datos del módulo no verbal:
+  • Expresión facial: apertura, sonrisa, tensión
+  • Orientación de cabeza: frontalidad, estabilidad, giros
+  • Centrado en el encuadre
+  • Manos: presencia, amplitud, cercanía a la cara, posibles bloqueos
+  • Voz: ritmo, pausas, volumen, variación
+  • Incluye 3 fortalezas y 3 áreas de mejora con pautas muy concretas
+
+  ======================================================================
+  == RECOMENDACIONES SAE (integradas) ==
+  Ofrece 5 recomendaciones prácticas y realistas que combinen lo verbal + lo no verbal, por ejemplo:
+  • Cómo abrir y cerrar respuestas
+  • Cómo modular voz y mirada
+  • Cómo usar manos para reforzar ideas
+  • Cómo estructurar logros
+  • Cómo dar una imagen profesional en 60 segundos
+  Incluye frases modelo aplicables directamente en entrevistas.
+
+  ======================================================================
+  == DATOS ANALIZADOS ==
+  Incluye el contenido EXACTO recibido:
+
+  [DISCURSO ORIGINAL]
+  """${verbal}"""
+
+  [ANÁLISIS NO VERBAL]
+  """${nonVerbal}"""`;
+    }
+
+    document.getElementById('btnCopiarYAbrir').onclick = async () => {
+      const prompt = buildPromptIntegrated();
+      if (!prompt) return;
+      try {
+        await navigator.clipboard.writeText(prompt);
+        window.open('https://chat.openai.com/', '_blank', 'noopener');
+        alert('✅ Prompt integrado copiado. Pega en ChatGPT y luego usa “📥 Pegar respuesta”.');
+      } catch (e) {
+        alert('No se pudo copiar automáticamente. Copia manualmente este prompt:\n\n' + prompt);
+      }
+    };
+
+    // ====== PEGAR RESPUESTA ChatGPT (nuevo parser) ======
+    document.getElementById('btnPegar').onclick = async () => {
+      try {
+        const text = (await navigator.clipboard.readText() || '').trim();
+        if (!text) return alert('El portapapeles está vacío.');
+        parseIntegratedResponse(text);
+
+        // AUTOGENERAR MP3 del FEEDBACK integrado
+        const rawFb = (feedbackEl.value||'').trim();
+        if (rawFb) {
+          const voiceName = voiceSelect.value;
+          const cleanFb = sanitizeForTTS(bulletsToSentences(rawFb));
+          google.script.run
+            .withSuccessHandler(async (b64) => {
+              feedbackMp3B64 = b64;
+              const url = await b64ToObjectUrl(b64);
+              feedbackPlayer.style.display = 'block';
+              AudioController.setSrc(feedbackPlayer, url);
+              fbTtsState.innerHTML = 'Estado feedback MP3: <span class="ok">listo</span>';
+            })
+            .withFailureHandler(err => {
+              fbTtsState.innerHTML = 'Estado feedback MP3: <span class="warn">error</span>';
+              alert('Error TTS Feedback: ' + (err?.message || err));
+            })
+            .sintetizarTextoMejorado(cleanFb, voiceName);
+        } else {
+          fbTtsState.innerHTML = 'Estado feedback MP3: <span class="warn">sin feedback</span>';
+        }
+      } catch (e) {
+        alert('No se pudo leer del portapapeles. Pega manualmente en algún campo y te lo adaptamos.');
+      }
+    };
+
+    // Parser: extrae PITCH 30s, 60s y concatena los 3 bloques de feedback en uno solo
+    function parseIntegratedResponse(s) {
+      const re30 = /==\s*PITCH\s*30s[^\n]*==([\s\S]*?)(?==\s*PITCH\s*60s[^\n]*==|$)/i;
+      const re60 = /==\s*PITCH\s*60s[^\n]*==([\s\S]*?)(?==\s*FEEDBACK\s*VERBAL[^\n]*==|$)/i;
+      const reFbVerbal = /==\s*FEEDBACK\s*VERBAL[^\n]*==([\s\S]*?)(?==\s*FEEDBACK\s*NO\s*VERBAL[^\n]*==|$)/i;
+      const reFbNoVerbal = /==\s*FEEDBACK\s*NO\s*VERBAL[^\n]*==([\s\S]*?)(?==\s*RECOMENDACIONES\s*SAE[^\n]*==|$)/i;
+      const reReco = /==\s*RECOMENDACIONES\s*SAE[^\n]*==([\s\S]*?)(?==\s*DATOS\s*ANALIZADOS[^\n]*==|$)/i;
+
+      const m30  = s.match(re30);
+      const m60  = s.match(re60);
+      const mFbV = s.match(reFbVerbal);
+      const mFbNV= s.match(reFbNoVerbal);
+      const mRec = s.match(reReco);
+
+      pitch30El.value = (m30 ? m30[1] : '').trim();
+      pitch60El.value = (m60 ? m60[1] : '').trim();
+
+      let fbText = '';
+      if (mFbV)  fbText += '== FEEDBACK VERBAL ==\n' + mFbV[1].trim() + '\n\n';
+      if (mFbNV) fbText += '== FEEDBACK NO VERBAL ==\n' + mFbNV[1].trim() + '\n\n';
+      if (mRec)  fbText += '== RECOMENDACIONES SAE ==\n' + mRec[1].trim();
+
+      if (!fbText) {
+        // Fallback: usa todo como feedback
+        fbText = s.trim();
+        alert('No se encontraron los bloques esperados. He colocado el contenido completo en “Feedback integrado”.');
+      }
+
+      feedbackEl.value = fbText.trim();
+
+      // Invalida audio del pitch (el feedback se regenera justo después)
+      improvedMp3B64 = '';
+      ttsPlayback.style.display = 'none';
+    }
+
+    // ====== TTS Pitch (30s/60s) con toggle ======
+    document.getElementById('btnTTS').onclick = async () => {
+      const choice = whichPitch.value;
+      const txtRaw = choice === '60s'
+        ? (pitch60El.value||'').trim()
+        : (pitch30El.value||'').trim();
+      if (!txtRaw) return alert('No hay texto en la versión elegida.');
+      const voiceName = voiceSelect.value;
+
+      if (ttsPlayback.src && improvedMp3B64) {
+        ttsPlayback.style.display = 'block';
+        return AudioController.toggle(ttsPlayback);
+      }
+
+      const txt = sanitizeForTTS(bulletsToSentences(txtRaw));
+      google.script.run
+        .withSuccessHandler(async (b64) => {
+          improvedMp3B64 = b64;
+          const url = await b64ToObjectUrl(b64);
+          ttsPlayback.style.display = 'block';
+          AudioController.setSrc(ttsPlayback, url);
+          AudioController.forcePlay(ttsPlayback);
+        })
+        .withFailureHandler(err => alert('Error TTS: ' + (err?.message || err)))
+        .sintetizarTextoMejorado(txt, voiceName);
+    };
+
+    // ====== TTS Feedback con toggle ======
+    document.getElementById('btnTTSFeedback').onclick = async () => {
+      const raw = (feedbackEl.value||'').trim();
+      if (!raw) return alert('No hay texto en “Feedback integrado”.');
+      const voiceName = voiceSelect.value;
+
+      if (feedbackPlayer.src && feedbackMp3B64) {
+        feedbackPlayer.style.display = 'block';
+        return AudioController.toggle(feedbackPlayer);
+      }
+
+      const cleanFb = sanitizeForTTS(bulletsToSentences(raw));
+      google.script.run
+        .withSuccessHandler(async (b64) => {
+          feedbackMp3B64 = b64;
+          const url = await b64ToObjectUrl(b64);
+          feedbackPlayer.style.display = 'block';
+          AudioController.setSrc(feedbackPlayer, url);
+          AudioController.forcePlay(feedbackPlayer);
+          fbTtsState.innerHTML = 'Estado feedback MP3: <span class="ok">listo</span>';
+        })
+        .withFailureHandler(err => {
+          fbTtsState.innerHTML = 'Estado feedback MP3: <span class="warn">error</span>';
+          alert('Error TTS (feedback): ' + (err?.message || err));
+        })
+        .sintetizarTextoMejorado(cleanFb, voiceName);
+    };
+
+    // ====== Exportar a PDF (verbal + no verbal) ======
+    document.getElementById('btnExportPdf').onclick = () => {
+      const payload = {
+        institucion: (institucionEl.value||'').trim(),
+        original:    (transcriptEl.value||'').trim(),
+        pitch30:     (pitch30El.value||'').trim(),
+        pitch60:     (pitch60El.value||'').trim(),
+        feedback:    (feedbackEl.value||'').trim(),
+        nonVerbal:   (nonVerbalSummaryEl.value||'').trim()
+      };
+      if (!payload.original && !payload.pitch30 && !payload.pitch60 && !payload.feedback && !payload.nonVerbal) {
+        alert('No hay contenido para exportar.');
+        return;
+      }
+      google.script.run
+        .withSuccessHandler((b64) => {
+          const bin = atob(b64);
+          const arr = new Uint8Array([...bin].map(c => c.charCodeAt(0)));
+          const blob = new Blob([arr], { type:'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'Elevator_Pitch_Integrado.pdf';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        })
+        .withFailureHandler(err => alert('Error al generar PDF: ' + (err?.message || err)))
+        .generatePdfBase64(payload);
+    };
+
+    // ====== Guardar & Enviar ======
+    document.getElementById('btnSaveSend').onclick = async () => {
+      const institution  = (institucionEl.value||'').trim();
+      const email        = (emailEl.value||'').trim();
+      const originalText = (transcriptEl.value||'').trim();
+      const p30          = (pitch30El.value||'').trim();
+      const p60          = (pitch60El.value||'').trim();
+      const fbText       = (feedbackEl.value||'').trim();
+      const nvText       = (nonVerbalSummaryEl.value||'').trim();
+
+      if (!originalText) return alert('Falta el discurso original.');
+      if (!p30 && !p60)  return alert('Falta el contenido de PITCH 30s o 60s.');
+      if (!originalMp3B64) return alert('No se ha generado el MP3 del original. Graba y detén para convertir.');
+
+      if (fbText && !feedbackMp3B64) {
+        const voiceName = voiceSelect.value;
+        const cleanFb = sanitizeForTTS(bulletsToSentences(fbText));
+        try {
+          feedbackMp3B64 = await new Promise((resolve, reject) => {
+            google.script.run
+              .withSuccessHandler(resolve)
+              .withFailureHandler(err => reject(err?.message || err))
+              .sintetizarTextoMejorado(cleanFb, voiceName);
+          });
+          const url = await b64ToObjectUrl(feedbackMp3B64);
+          feedbackPlayer.style.display = 'block';
+          AudioController.setSrc(feedbackPlayer, url);
+        } catch (e) {
+          const cont = confirm('No se pudo generar el MP3 del feedback. ¿Enviar sin el audio de feedback?');
+          if (!cont) return;
+        }
+      }
+
+      const fullSeq = `${originalText} --- [PITCH 30s] ${p30} --- [PITCH 60s] ${p60} --- [FEEDBACK INTEGRADO] ${fbText} --- [RESUMEN NO VERBAL] ${nvText}`;
+
+      google.script.run.saveEntry(institution, originalText, p30, p60, fbText, fullSeq);
+
+      if (!email) {
+        alert('Guardado en hoja. No se envió email porque no indicaste destinatario.');
+        return;
+      }
+
+      const label = whichPitch.value; // '30s' o '60s'
+      google.script.run
+        .withSuccessHandler(() => alert('✅ Guardado en hoja y enviado email.'))
+        .withFailureHandler(err => alert('Error al enviar email: ' + (err?.message || err)))
+        .sendAudioByEmail(email, originalMp3B64, improvedMp3B64 || '', label, feedbackMp3B64 || '');
+    };
+
+    // =====================================================================
+    // MÓDULO NO VERBAL – CÁMARA + AUDIO + RESUMEN AUTOMÁTICO (v4.1)
+    // =====================================================================
+
+    function setNvStatus(msg, type) {
+      let cls = 'badge';
+      if (type === 'ok') cls += ' badge-ok';
+      else if (type === 'bad') cls += ' badge-bad';
+      else cls += ' badge-info';
+      nvStatusEl.className = cls;
+      nvStatusEl.textContent = msg;
+    }
+    function setNvResult(html) {
+      nvResultEl.innerHTML = html;
+    }
+
+    // ====== Cambio (c): startCamera más robusta ======
+    async function startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setNvStatus('Este navegador no soporta acceso a la cámara (getUserMedia).', 'bad');
+        alert('Tu navegador no soporta getUserMedia o está deshabilitado.\nPrueba con Chrome o Edge actualizados sobre HTTPS.');
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        });
+
+        video.srcObject = stream;
+        video.muted = true;       // clave para autoplay en móviles
+        video.playsInline = true; // iOS
+        await video.play().catch(e => console.warn('No se pudo iniciar el vídeo:', e));
+
+        // Sincronizamos tamaño del canvas de manos con el vídeo
+        const vw = video.videoWidth  || 480;
+        const vh = video.videoHeight || 360;
+        canvasHands.width  = vw;
+        canvasHands.height = vh;
+
+        setNvStatus('Cámara iniciada. Colócate centrado/a y con buena luz.', 'ok');
+      } catch (err) {
+        console.error('Error al iniciar la cámara:', err);
+        setNvStatus('Error al iniciar la cámara: ' + err.name, 'bad');
+        alert(
+          'Error al iniciar la cámara:\n\n' +
+          'Tipo: ' + err.name + '\nMensaje: ' + err.message +
+          '\n\nSi es "NotAllowedError" o "PermissionDeniedError":\n' +
+          '1) Haz clic en el candado de la barra de direcciones.\n' +
+          '2) Permite la cámara para este sitio.\n' +
+          '3) Recarga la página.'
+        );
+      }
+    }
+
+    // Audio / voz
+    let audioContext = null;
+    let analyser = null;
+    let audioDataArray = null;
+    let nvAudioStream = null;
+    const AUDIO_INTERVAL_MS = 200;
+    const SPEECH_THRESHOLD = 0.02;
+    const MIN_PAUSE_MS = 700;
+
+    let audioIntervalId = null;
+    let audioVolumeSamples = [];
+    let audioSpeechFlags = [];
+    let audioTimestamps = [];
+
+    function resetAudioMetrics() {
+      audioVolumeSamples = [];
+      audioSpeechFlags = [];
+      audioTimestamps = [];
+    }
+
+    async function startAudioAnalysis() {
+      try {
+        nvAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(nvAudioStream);
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 2048;
+        source.connect(analyser);
+        audioDataArray = new Float32Array(analyser.fftSize);
+
+        resetAudioMetrics();
+        if (audioIntervalId) clearInterval(audioIntervalId);
+        audioIntervalId = setInterval(audioTick, AUDIO_INTERVAL_MS);
+      } catch (e) {
+        console.error('Error iniciando análisis de audio / micrófono:', e);
+        setNvStatus('No se ha podido acceder al micrófono. La simulación continuará sin métricas de voz.', 'bad');
+      }
+    }
+
+    function stopAudioAnalysis() {
+      if (audioIntervalId) {
+        clearInterval(audioIntervalId);
+        audioIntervalId = null;
+      }
+      if (nvAudioStream) {
+        nvAudioStream.getTracks().forEach(t => t.stop());
+        nvAudioStream = null;
+      }
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+        analyser = null;
+        audioDataArray = null;
+      }
+    }
+
+    let nvIsRunning = false;
+    let nvIntervalId = null;
+    let nvStartTime = null;
+    let nvSimDurationMs = 0;
+    let resultsSeries = [];
+
+    const INTERVAL_MS = 1000;
+    const MAX_DURATION_MS = 10 * 60 * 1000;
+
+    function audioTick() {
+      if (!nvIsRunning || !analyser || !audioDataArray) return;
+      analyser.getFloatTimeDomainData(audioDataArray);
+      let sumSquares = 0;
+      for (let i = 0; i < audioDataArray.length; i++) {
+        const v = audioDataArray[i];
+        sumSquares += v * v;
+      }
+      const rms = Math.sqrt(sumSquares / audioDataArray.length);
+      const isSpeech = rms > SPEECH_THRESHOLD;
+      const ts = Date.now() - nvStartTime;
+
+      audioVolumeSamples.push(rms);
+      audioSpeechFlags.push(isSpeech);
+      audioTimestamps.push(ts);
+    }
+
+    function toggleSimulation() {
+      if (!nvIsRunning) startSimulation();
+      else stopSimulation('manual');
+    }
+
+    // ====== Cambio (b): startSimulation arranca la cámara si no está activa ======
+    async function startSimulation() {
+      // Si la cámara no está todavía activa, intentamos activarla aquí
+      if (!video.srcObject) {
+        await startCamera();
+      }
+
+      // Si sigue sin stream, abortamos con mensaje claro
+      if (!video.srcObject) {
+        setNvStatus('No se ha podido acceder a la cámara. Revisa permisos del navegador.', 'bad');
+        alert(
+          'No se ha podido acceder a la cámara.\n\n' +
+          '1) Comprueba que el navegador tiene permiso para usar la cámara en esta página.\n' +
+          '2) Si la app está incrustada en otra página (por ejemplo, Sites), ábrela en una pestaña nueva y prueba allí.'
+        );
+        return;
+      }
+
+      nvIsRunning = true;
+      nvStartTime = Date.now();
+      nvSimDurationMs = 0;
+      resultsSeries = [];
+      resetAudioMetrics();
+      setNvResult('Simulación en marcha. Se están capturando imágenes y analizando la voz…');
+      nvBtn.textContent = '⏹️ Detener simulación y generar informe';
+
+      setNvStatus('Simulación en marcha. Habla como en una entrevista real.', 'info');
+
+      if (nvIntervalId) clearInterval(nvIntervalId);
+      nvIntervalId = setInterval(captureShot, INTERVAL_MS);
+
+      await startAudioAnalysis();
+    }
+
+    function stopSimulation(reason) {
+      if (!nvIsRunning) return;
+      nvIsRunning = false;
+      nvSimDurationMs = Date.now() - nvStartTime;
+
+      if (nvIntervalId) {
+        clearInterval(nvIntervalId);
+        nvIntervalId = null;
+      }
+      stopAudioAnalysis();
+
+      if (reason === 'auto') {
+        setNvStatus('Tiempo máximo alcanzado. Procesando resultados…', 'info');
+      } else {
+        setNvStatus('Simulación detenida. Procesando resultados…', 'info');
+      }
+      nvBtn.textContent = '▶️ Iniciar simulación (máx. 10 min)';
+      finalizeSeries();
+    }
+
+    function captureShot() {
+      if (!nvIsRunning) return;
+      const elapsed = Date.now() - nvStartTime;
+      if (elapsed >= MAX_DURATION_MS) {
+        stopSimulation('auto');
+        return;
+      }
+
+      // Aseguramos que el vídeo tiene frame listo
+      if (video.readyState < 2) {
+        console.warn('Frame de vídeo no listo aún, se salta esta captura.');
+        return;
+      }
+
+      // Sincronizamos tamaño del canvas oculto con el del vídeo (por si cambia)
+      const vw = video.videoWidth || 480;
+      const vh = video.videoHeight || 360;
+      if (canvas.width !== vw || canvas.height !== vh) {
+        canvas.width = vw;
+        canvas.height = vh;
+      }
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      const base64 = dataUrl.split(',')[1];
+
+      const seconds = Math.round(elapsed / 1000);
+      setNvStatus(`Simulación en marcha (${seconds} s)…`, 'info');
+
+      // >>> NUEVO: snapshot de la info de manos en el momento de la captura
+      const handsSnapshot = lastHandsInfo ? { ...lastHandsInfo } : null;
+
+      google.script.run
+        .withSuccessHandler((res) => {
+          if (!nvIsRunning) return;
+          // Fusionamos análisis de cara (servidor) con manos (MediaPipe cliente)
+          if (handsSnapshot) {
+            res.handCount    = typeof handsSnapshot.count    === 'number' ? handsSnapshot.count    : 0;
+            res.handAreaNorm = typeof handsSnapshot.avgArea  === 'number' ? handsSnapshot.avgArea  : 0;
+            const interaction = assessHandFaceInteraction(res.faceBox, handsSnapshot.boxes || []);
+            res.handCoverFace = interaction.coversFace;
+            res.handNearFace  = interaction.nearFace;
+          }
+          resultsSeries.push(res);
+        })
+        .withFailureHandler((err) => {
+          console.error(err);
+          if (!nvIsRunning) return;
+          resultsSeries.push(null);
+        })
+        .analyzeImage(base64);
+    }
+
+    function likelihoodToScore(l) {
+      switch (l) {
+        case 'VERY_UNLIKELY': return 0;
+        case 'UNLIKELY':      return 1;
+        case 'POSSIBLE':      return 2;
+        case 'LIKELY':        return 3;
+        case 'VERY_LIKELY':   return 4;
+        default:              return 2;
+      }
+    }
+    function scoreToLikelihood(score) {
+      const s = Math.round(score);
+      switch (s) {
+        case 0: return 'VERY_UNLIKELY';
+        case 1: return 'UNLIKELY';
+        case 2: return 'POSSIBLE';
+        case 3: return 'LIKELY';
+        case 4: return 'VERY_LIKELY';
+        default: return 'POSSIBLE';
+      }
+    }
+    function likelihoodToTexto(l) {
+      switch (l) {
+        case 'VERY_LIKELY': return 'muy alta';
+        case 'LIKELY':      return 'alta';
+        case 'POSSIBLE':    return 'moderada';
+        case 'UNLIKELY':    return 'baja';
+        case 'VERY_UNLIKELY': return 'muy baja';
+        default:            return 'desconocida';
+      }
+    }
+    function avg(arr) {
+      return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+    }
+
+    function clamp01(v) {
+      return Math.min(1, Math.max(0, v));
+    }
+
+    function expandBox(box, factor) {
+      const extraW = box.w * factor;
+      const extraH = box.h * factor;
+      const x0 = clamp01(box.x0 - extraW / 2);
+      const y0 = clamp01(box.y0 - extraH / 2);
+      const x1 = clamp01(box.x1 + extraW / 2);
+      const y1 = clamp01(box.y1 + extraH / 2);
+      return { x0, y0, x1, y1, w: x1 - x0, h: y1 - y0 };
+    }
+
+    function intersectionArea(a, b) {
+      const x0 = Math.max(a.x0, b.x0);
+      const y0 = Math.max(a.y0, b.y0);
+      const x1 = Math.min(a.x1, b.x1);
+      const y1 = Math.min(a.y1, b.y1);
+      const w = Math.max(0, x1 - x0);
+      const h = Math.max(0, y1 - y0);
+      return w * h;
+    }
+
+    function assessHandFaceInteraction(faceBox, handBoxes) {
+      if (!faceBox || !handBoxes || handBoxes.length === 0) {
+        return { coversFace: false, nearFace: false };
+      }
+      const expandedFace = expandBox(faceBox, FACE_NEAR_EXPANSION);
+      const faceArea = Math.max(faceBox.w * faceBox.h, 1e-6);
+      const expandedArea = Math.max(expandedFace.w * expandedFace.h, 1e-6);
+
+      let coversFace = false;
+      let nearFace = false;
+
+      handBoxes.forEach(box => {
+        const overlapFace = intersectionArea(box, faceBox) / faceArea;
+        const overlapExpanded = intersectionArea(box, expandedFace) / expandedArea;
+        if (overlapFace >= FACE_COVER_THRESHOLD) coversFace = true;
+        if (overlapExpanded >= FACE_NEAR_THRESHOLD) nearFace = true;
+      });
+
+      return { coversFace, nearFace };
+    }
+
+    function computeVoiceMetrics() {
+      if (audioVolumeSamples.length === 0) return null;
+
+      const totalSamples = audioVolumeSamples.length;
+      const totalDurationMs = nvSimDurationMs || (audioTimestamps[audioTimestamps.length - 1] || 0);
+      const totalDurationSec = totalDurationMs / 1000;
+
+      const volumeMean = avg(audioVolumeSamples);
+      const volumeMeanSq = avg(audioVolumeSamples.map(x => x * x));
+      const volumeStd = Math.sqrt(Math.max(volumeMeanSq - volumeMean * volumeMean, 0));
+
+      const speechCount = audioSpeechFlags.filter(f => f).length;
+      const speechPct = totalSamples > 0 ? Math.round((speechCount / totalSamples) * 100) : 0;
+
+      let pauses = [];
+      let inSilence = false;
+      let silenceStartTs = null;
+
+      for (let i = 0; i < totalSamples; i++) {
+        const isSpeech = audioSpeechFlags[i];
+        const ts = audioTimestamps[i];
+
+        if (!isSpeech) {
+          if (!inSilence) {
+            inSilence = true;
+            silenceStartTs = ts;
+          }
+        } else {
+          if (inSilence) {
+            const dur = ts - silenceStartTs;
+            if (dur >= MIN_PAUSE_MS) pauses.push(dur);
+            inSilence = false;
+            silenceStartTs = null;
+          }
+        }
+      }
+
+      if (inSilence && silenceStartTs !== null) {
+        const lastTs = audioTimestamps[audioTimestamps.length - 1];
+        const dur = lastTs - silenceStartTs;
+        if (dur >= MIN_PAUSE_MS) pauses.push(dur);
+      }
+
+      const numPausesLong = pauses.length;
+      const avgPauseMs = pauses.length ? avg(pauses) : 0;
+      const avgPauseSec = avgPauseMs / 1000;
+      const pausesPerMinute = totalDurationSec > 0 ? (numPausesLong / (totalDurationSec / 60)) : 0;
+
+      return {
+        totalDurationSec,
+        volumeMean,
+        volumeStd,
+        speechPct,
+        numPausesLong,
+        avgPauseSec,
+        pausesPerMinute
+      };
+    }
+
+    function finalizeSeries() {
+      const total = resultsSeries.length;
+      const valid = resultsSeries.filter(r => r && r.faceDetected);
+
+      if (total === 0) {
+        setNvStatus('No se ha podido analizar ninguna imagen.', 'bad');
+        setNvResult('Revisa la cámara y vuelve a intentarlo.');
+        return;
+      }
+      if (valid.length === 0) {
+        setNvStatus('No se ha detectado rostro.', 'bad');
+        setNvResult('Colócate centrado/a, con buena luz, y repite la simulación.');
+        return;
+      }
+
+      const presenciaPct = Math.round((valid.length / total) * 100);
+
+      let joySum = 0, angerSum = 0, surpriseSum = 0;
+      let panSum = 0, tiltSum = 0, rollSum = 0;
+      let centerXSum = 0, centerYSum = 0;
+      let centerCount = 0;
+
+      let framesWithHands = 0;
+      let handAreaSum = 0;
+      let framesHandCoverFace = 0;
+      let framesHandNearFace = 0;
+
+      valid.forEach(r => {
+        joySum += likelihoodToScore(r.joy);
+        angerSum += likelihoodToScore(r.anger);
+        surpriseSum += likelihoodToScore(r.surprise);
+        panSum += r.panAngle;
+        tiltSum += r.tiltAngle;
+        rollSum += r.rollAngle;
+
+        if (typeof r.centerX === 'number' && typeof r.centerY === 'number') {
+          centerXSum += r.centerX;
+          centerYSum += r.centerY;
+          centerCount++;
+        }
+        if (typeof r.handCount === 'number' && r.handCount > 0) {
+          framesWithHands++;
+          if (typeof r.handAreaNorm === 'number') {
+            handAreaSum += r.handAreaNorm;
+          }
+          if (r.handCoverFace) framesHandCoverFace++;
+          if (r.handNearFace) framesHandNearFace++;
+        }
+      });
+
+      const n = valid.length;
+      const avgJoyScore = joySum / n;
+      const avgAngerScore = angerSum / n;
+      const avgSurpriseScore = surpriseSum / n;
+
+      const avgJoy = scoreToLikelihood(avgJoyScore);
+      const avgAnger = scoreToLikelihood(avgAngerScore);
+      const avgSurprise = scoreToLikelihood(avgSurpriseScore);
+
+      const avgPan = panSum / n;
+      const avgTilt = tiltSum / n;
+      const avgRoll = rollSum / n;
+
+      let panChanges = [];
+      let tiltChanges = [];
+      let rollChanges = [];
+      for (let i = 1; i < valid.length; i++) {
+        const prev = valid[i - 1];
+        const curr = valid[i];
+        panChanges.push(Math.abs(curr.panAngle - prev.panAngle));
+        tiltChanges.push(Math.abs(curr.tiltAngle - prev.tiltAngle));
+        rollChanges.push(Math.abs(curr.rollAngle - prev.rollAngle));
+      }
+      const avgPanChange = avg(panChanges);
+      const avgTiltChange = avg(tiltChanges);
+      const avgRollChange = avg(rollChanges);
+      const movimientoCabeza = avgPanChange + avgTiltChange + avgRollChange;
+
+      let distH = null, distV = null;
+      if (centerCount > 0) {
+        const avgCenterX = centerXSum / centerCount;
+        const avgCenterY = centerYSum / centerCount;
+        distH = Math.abs(avgCenterX - 0.5);
+        distV = Math.abs(avgCenterY - 0.5);
+      }
+
+      let handPresencePct = 0;
+      let avgHandAreaVisible = 0;
+      let handCoverPct = 0;
+      let handNearFacePct = 0;
+
+      if (framesWithHands > 0) {
+        handPresencePct = Math.round((framesWithHands / n) * 100);
+        avgHandAreaVisible = handAreaSum / framesWithHands;
+        handCoverPct = Math.round((framesHandCoverFace / framesWithHands) * 100);
+        handNearFacePct = Math.round((framesHandNearFace / framesWithHands) * 100);
+      }
+
+      const voiceMetrics = computeVoiceMetrics();
+
+      const feedbackCaraManos = [];
+      const feedbackVoz = [];
+
+      if (presenciaPct >= 90) {
+        feedbackCaraManos.push('Mantienes tu rostro visible casi todo el tiempo. Muy buena presencia en pantalla para entrevista online.');
+      } else if (presenciaPct >= 75) {
+        feedbackCaraManos.push('La mayor parte del tiempo tu rostro está visible, aunque en algunos momentos te sales algo del encuadre.');
+      } else {
+        feedbackCaraManos.push('En bastantes momentos tu rostro deja de estar claramente visible. Es importante permanecer dentro del encuadre.');
+      }
+
+      if (avgJoy === 'VERY_LIKELY' || avgJoy === 'LIKELY') {
+        feedbackCaraManos.push('En la mayor parte de la simulación mantienes una expresión abierta y cercana.');
+      } else if (avgJoy === 'POSSIBLE') {
+        feedbackCaraManos.push('Tu expresión media es neutra con algo de apertura. Prueba a introducir una sonrisa ligera al inicio y al cierre.');
+      } else {
+        feedbackCaraManos.push('Tu expresión tiende a ser bastante seria. Una ligera sonrisa en saludo y despedida suele ayudar.');
+      }
+
+      if (avgAnger === 'LIKELY' || avgAnger === 'VERY_LIKELY') {
+        feedbackCaraManos.push('Aparecen rasgos que pueden interpretarse como enfado (cejas, tensión facial). Revisa el gesto para suavizarlo.');
+      }
+      if (avgSurprise === 'LIKELY' || avgSurprise === 'VERY_LIKELY') {
+        feedbackCaraManos.push('Hay bastante expresión de sorpresa. Intenta mantener un gesto más estable y calmado.');
+      }
+
+      const panAbs = Math.abs(avgPan);
+      const tiltAbs = Math.abs(avgTilt);
+      const rollAbs = Math.abs(avgRoll);
+      if (panAbs < 15 && tiltAbs < 15 && rollAbs < 15) {
+        feedbackCaraManos.push('La orientación media de tu cabeza es bastante frontal, adecuada para entrevista online.');
+      } else {
+        const detallesOri = [];
+        if (panAbs >= 15) detallesOri.push('giras la cabeza hacia un lado con frecuencia');
+        if (tiltAbs >= 15) detallesOri.push('miras demasiado hacia arriba o hacia abajo');
+        if (rollAbs >= 15) detallesOri.push('mantienes la cabeza ladeada');
+        feedbackCaraManos.push('La posición media de tu cabeza no es totalmente frontal (' + detallesOri.join(', ') + ').');
+      }
+
+      if (movimientoCabeza < 10) {
+        feedbackCaraManos.push('Tu cabeza se mantiene bastante estable, lo que transmite calma.');
+      } else if (movimientoCabeza < 25) {
+        feedbackCaraManos.push('La cabeza se mueve de forma moderada. Está bien, aunque podrías reducir un poco los giros.');
+      } else {
+        feedbackCaraManos.push('La cabeza se mueve bastante. Puede transmitir nerviosismo; intenta reducir esos movimientos.');
+      }
+
+      if (distH !== null && distV !== null) {
+        if (distH < 0.1 && distV < 0.1) {
+          feedbackCaraManos.push('Estás razonablemente centrado en el encuadre.');
+        } else {
+          const detallesCentro = [];
+          if (distH >= 0.1) detallesCentro.push('tiendes a irte hacia un lado');
+          if (distV >= 0.1) detallesCentro.push('apareces demasiado arriba o abajo');
+          feedbackCaraManos.push('Tu rostro no aparece completamente centrado (' + detallesCentro.join(', ') + ').');
+        }
+      }
+
+      if (framesWithHands === 0) {
+        feedbackCaraManos.push('Tus manos casi no aparecen. Introducir algunos gestos suaves puede ayudarte a reforzar tus ideas.');
+      } else {
+        if (handPresencePct < 30) {
+          feedbackCaraManos.push('Tus manos aparecen en pocas escenas. Puedes usarlas algo más para acompañar el discurso.');
+        } else if (handPresencePct <= 80) {
+          feedbackCaraManos.push('El nivel de presencia de tus manos es equilibrado.');
+        } else {
+          feedbackCaraManos.push('Tus manos aparecen con mucha frecuencia. Si los gestos son muy constantes pueden distraer.');
+        }
+        if (avgHandAreaVisible > 0) {
+          if (avgHandAreaVisible < 0.02) {
+            feedbackCaraManos.push('La amplitud de tus gestos es contenida. Podrías abrir un poco más los gestos en los momentos clave.');
+          } else if (avgHandAreaVisible <= 0.08) {
+            feedbackCaraManos.push('La amplitud de tus gestos es moderada y adecuada.');
+          } else {
+            feedbackCaraManos.push('Tus gestos de manos son bastante amplios; pueden ocupar mucha pantalla.');
+          }
+        }
+        if (handCoverPct > 10) {
+          feedbackCaraManos.push('En varias escenas tus manos llegan a tapar la zona de la cara. Evita cubrirte la boca o la cara.');
+        }
+        if (handNearFacePct > 30 && handCoverPct <= 10) {
+          feedbackCaraManos.push('Llevas con frecuencia las manos muy cerca de la cara. Es preferible mantener los gestos a la altura del pecho.');
+        }
+      }
+
+      let voiceSummaryHtml = '';
+      if (voiceMetrics) {
+        const d = voiceMetrics;
+        const durMin = d.totalDurationSec / 60;
+        if (d.speechPct < 40) {
+          feedbackVoz.push('Hablas durante una parte relativamente pequeña del tiempo, con muchas pausas.');
+        } else if (d.speechPct <= 80) {
+          feedbackVoz.push('El tiempo hablando frente a las pausas está bastante equilibrado.');
+        } else {
+          feedbackVoz.push('Hablas casi todo el tiempo, con pocas pausas.');
+        }
+
+        if (d.pausesPerMinute < 1) {
+          feedbackVoz.push('Haces muy pocas pausas largas.');
+        } else if (d.pausesPerMinute <= 4) {
+          feedbackVoz.push('El número de pausas largas por minuto es razonable.');
+        } else {
+          feedbackVoz.push('Hay bastantes pausas largas en tu discurso.');
+        }
+
+        if (d.volumeMean < 0.02) {
+          feedbackVoz.push('Tu volumen medio es más bien bajo, podría costar escucharte.');
+        } else if (d.volumeMean <= 0.06) {
+          feedbackVoz.push('Tu volumen medio es adecuado.');
+        } else {
+          feedbackVoz.push('Tu volumen es relativamente alto; ojo con sonar demasiado intenso.');
+        }
+
+        if (d.volumeStd < 0.01) {
+          feedbackVoz.push('La variación de volumen es muy baja. Introducir ligeros cambios puede dar más vida al discurso.');
+        }
+
+        voiceSummaryHtml =
+          `<br><br><strong>Voz (resumen técnico):</strong><br> • Duración aproximada: <code>${d.totalDurationSec.toFixed(1)} s</code> (~${durMin.toFixed(2)} min)<br> • % tiempo hablando: <code>${d.speechPct}%</code><br> • Nº pausas largas (&ge; ${MIN_PAUSE_MS} ms): <code>${d.numPausesLong}</code> (~${d.pausesPerMinute.toFixed(1)} por minuto)<br> • Duración media de pausas largas: <code>${d.avgPauseSec.toFixed(2)} s</code><br> • Volumen medio (RMS relativo): <code>${d.volumeMean.toFixed(3)}</code><br> • Variación del volumen: <code>${d.volumeStd.toFixed(3)}</code><br>`;
+      } else {
+        feedbackVoz.push('No se han podido calcular métricas de voz (quizá el micrófono no estaba activo o había poco sonido).');
+      }
+
+      const joyText = likelihoodToTexto(avgJoy);
+      const angerText = likelihoodToTexto(avgAnger);
+      const surpriseText = likelihoodToTexto(avgSurprise);
+
+      const simSec = nvSimDurationMs / 1000;
+      const simMin = simSec / 60;
+
+      const html = `<strong>Resumen técnico (cara y manos, sobre ${valid.length} imágenes con rostro):</strong><br>
+ • Duración aproximada de la simulación: <code>${simSec.toFixed(1)} s</code> (~${simMin.toFixed(2)} min)<br>
+ • Presencia del rostro en pantalla: <code>${presenciaPct}%</code><br>
+ • Alegría media: <code>${avgJoy}</code> (probabilidad ${joyText})<br>
+ • Enfado medio: <code>${avgAnger}</code> (probabilidad ${angerText})<br>
+ • Sorpresa media: <code>${avgSurprise}</code> (probabilidad ${surpriseText})<br>
+ • Giro horizontal medio (panAngle): <code>${avgPan.toFixed(1)}°</code><br>
+ • Inclinación vertical media (tiltAngle): <code>${avgTilt.toFixed(1)}°</code><br>
+ • Rotación media de la cabeza (rollAngle): <code>${avgRoll.toFixed(1)}°</code><br>
+ • Movimiento medio de la cabeza: <code>${movimientoCabeza.toFixed(1)}°</code><br>
+ • Presencia de manos (con rostro): <code>${handPresencePct}%</code><br>
+ • Amplitud gestual media (área relativa de manos): <code>${avgHandAreaVisible.toFixed(3)}</code><br>
+ • Manos tapando la cara (sobre imágenes con manos): <code>${handCoverPct}%</code><br>
+ • Manos cerca de la cara (sobre imágenes con manos): <code>${handNearFacePct}%</code>${voiceSummaryHtml}
+ <br><br>
+ <strong>Interpretación orientativa para entrevista (cara y manos):</strong><br>
+ ${feedbackCaraManos.map(f => '• ' + f).join('<br>')}
+ <br><br>
+ <strong>Interpretación orientativa para entrevista (voz: ritmo y volumen):</strong><br>
+ ${feedbackVoz.map(f => '• ' + f).join('<br>')}
+ <br><br><em>Nota:</em> Resultado orientativo para entrenamiento.`;
+
+      setNvResult(html);
+      setNvStatus('Simulación completada. Resumen no verbal generado.', 'ok');
+
+      const dVoice = voiceMetrics;
+      const nvTextLines = [];
+      nvTextLines.push('RESUMEN NO VERBAL – ENTREVISTA SIMULADA');
+      nvTextLines.push(`Duración aproximada: ${simSec.toFixed(1)} s (~${simMin.toFixed(2)} min)`);
+      nvTextLines.push(`Presencia del rostro en pantalla: ${presenciaPct}%`);
+      nvTextLines.push(`Alegría media: ${avgJoy} (${joyText})`);
+      nvTextLines.push(`Enfado media: ${avgAnger} (${angerText})`);
+      nvTextLines.push(`Sorpresa media: ${avgSurprise} (${surpriseText})`);
+      nvTextLines.push(`Orientación media cabeza (pan/tilt/roll): ${avgPan.toFixed(1)}° / ${avgTilt.toFixed(1)}° / ${avgRoll.toFixed(1)}°`);
+      nvTextLines.push(`Movimiento medio entre capturas: ${movimientoCabeza.toFixed(1)}°`);
+      nvTextLines.push(`Presencia de manos en plano: ${handPresencePct}%`);
+      nvTextLines.push(`Amplitud gestual media (área relativa): ${avgHandAreaVisible.toFixed(3)}`);
+      nvTextLines.push(`Manos tapando la cara (sobre frames con manos): ${handCoverPct}%`);
+      nvTextLines.push(`Manos cerca de la cara (sobre frames con manos): ${handNearFacePct}%`);
+
+      if (dVoice) {
+        nvTextLines.push('');
+        nvTextLines.push('VOZ – RITMO Y VOLUMEN (medidas aproximadas)');
+        nvTextLines.push(`Duración analizada voz: ${dVoice.totalDurationSec.toFixed(1)} s`);
+        nvTextLines.push(`% tiempo hablando (vs. silencio): ${dVoice.speechPct}%`);
+        nvTextLines.push(`Nº pausas largas (≥ ${MIN_PAUSE_MS} ms): ${dVoice.numPausesLong} (~${dVoice.pausesPerMinute.toFixed(1)} por minuto)`);
+        nvTextLines.push(`Duración media de pausas largas: ${dVoice.avgPauseSec.toFixed(2)} s`);
+        nvTextLines.push(`Volumen medio (RMS relativo): ${dVoice.volumeMean.toFixed(3)}`);
+        nvTextLines.push(`Variación del volumen (desv. típica): ${dVoice.volumeStd.toFixed(3)}`);
+      }
+
+      nvTextLines.push('');
+      nvTextLines.push('COMENTARIOS RESUMIDOS CARA Y MANOS:');
+      feedbackCaraManos.forEach(f => nvTextLines.push('- ' + f));
+      nvTextLines.push('');
+      nvTextLines.push('COMENTARIOS RESUMIDOS VOZ:');
+      feedbackVoz.forEach(f => nvTextLines.push('- ' + f));
+
+      nonVerbalSummaryEl.value = nvTextLines.join('\n');
+    }
+
+    nvBtn.addEventListener('click', toggleSimulation);
+
+    // ====== Cambio (a): en load solo initHands; la cámara se inicia al arrancar simulación ======
+    window.addEventListener('load', () => {
+      initHands(); // MediaPipe listo; espera a que la cámara se inicie cuando empiece la simulación
+    });
+  </script>
+</body>
+</html>
